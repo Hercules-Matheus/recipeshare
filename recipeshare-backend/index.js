@@ -54,3 +54,56 @@ app.post("/auth/token", async (req, res) => {
       .send({ error: "Credenciais inválidas", details: error.message });
   }
 });
+
+//Rota para consultas em conjunto
+app.get("/recipes", authenticateJWT, async (req, res) => {
+  try {
+    const snapshot = await db
+      .collection("recipes")
+      .where("userId", "==", req.user.uid)
+      .get();
+    const recipes = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    res.send(recipes);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+//Rota para adicionar receita
+app.post("/recipes", authenticateJWT, async (req, res) => {
+  try {
+    const recipe = { ...req.body, userId: req.user.uid };
+    const docRef = await db.collection("recipes").add(recipe);
+    res.status(201).send({ id: docRef.id, ...recipe });
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+//Rota para atualizar receita
+app.put("/recipes/:id", authenticateJWT, async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.collection("recipes").doc(id).update(req.body);
+    res.status(200).send({ id, ...req.body });
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+//Rota consulta individual por ID
+app.get("/recipes/:id", authenticateJWT, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const doc = await db.collection("recipes").doc(id).get();
+    if (!doc.exists) throw new Error("Receita não encontrada");
+    res.send({ id: doc.id, ...doc.data() });
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+//Iniciar servidor
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
