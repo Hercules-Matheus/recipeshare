@@ -9,7 +9,7 @@
   </head>
   <body>
     <div class="container">
-      <h1>Receitas</h1>
+      <h1>RecipeShare</h1>
 
       <!-- Login Form -->
       <div id="login-section">
@@ -20,14 +20,14 @@
       </div>
 
       <!-- Recipe Form -->
-      <div id="recipe-section" style="display: none">
+      <div id="recipe-section">
         <h2>Adicionar Receita</h2>
         <input type="text" id="recipe-name" placeholder="Nome da Receita" />
         <textarea
           id="recipe-description"
           placeholder="Descrição da Receita"
         ></textarea>
-        <button onclick="addRecipe()">Adicionar Receita</button>
+        <button id="addRecipe">Adicionar Receita</button>
 
         <h2>Suas Receitas</h2>
         <div id="recipe-list" class="recipe-list"></div>

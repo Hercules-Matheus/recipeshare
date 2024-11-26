@@ -1,6 +1,7 @@
 import { auth, signInWithEmailAndPassword } from "./firebase-config.js";
 
 let authToken = ""; // Variável para armazenar o token do usuário
+let recipeId = "";
 
 // Função de login
 async function login(email, password) {
@@ -25,7 +26,7 @@ async function login(email, password) {
   }
 }
 
-// Exemplo: Vincular a função a um botão de login
+//Vincular a função a um botão de login
 document.getElementById("loginBtn").addEventListener("click", () => {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
@@ -34,8 +35,11 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
 // Função para adicionar uma receita
 async function addRecipe() {
+  console.log("on addRecipe");
+
   const name = document.getElementById("recipe-name").value;
   const description = document.getElementById("recipe-description").value;
+  console.log(authToken);
 
   const response = await fetch("http://localhost:3000/recipes", {
     method: "POST",
@@ -56,6 +60,10 @@ async function addRecipe() {
     alert("Erro ao adicionar receita");
   }
 }
+
+document.getElementById("addRecipe").addEventListener("click", () => {
+  addRecipe();
+});
 
 // Função para carregar receitas
 async function loadRecipes() {
@@ -88,9 +96,9 @@ function displayRecipes(recipes) {
     recipeItem.innerHTML = `
       <h3>${recipe.name}</h3>
       <p>${recipe.description}</p>
-      <button onclick="deleteRecipe('${recipe.id}')">Deletar</button>
+      <button id="deleteBtn">Deletar</button>
     `;
-
+    recipeId = recipe.id;
     recipeList.appendChild(recipeItem);
   });
 }
@@ -111,3 +119,7 @@ async function deleteRecipe(recipeId) {
     alert("Erro ao deletar receita");
   }
 }
+
+document.getElementById("deleteBtn").addEventListener("click", () => {
+  deleteRecipe(recipeId);
+});

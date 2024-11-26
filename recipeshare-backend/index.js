@@ -18,14 +18,21 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Middleware para JWT do Firebase
 async function authenticateJWT(req, res, next) {
-  const token = req.headers.authorization?.split(" ")[1];
+  const authHeader = req.headers.authorization;
+  console.log("Cabeçalho de autorização:", authHeader);
+
+  const token = authHeader?.split(" ")[1];
   if (!token) {
+    console.log("on if");
+
     return res.status(403).send({ error: "Token não fornecido" });
   }
   try {
     //Verifica o token com o Firebase Admin
     const decodedToken = await admin.auth().verifyIdToken(token);
     req.user = decodedToken;
+    console.log("token validado");
+
     next();
   } catch (error) {
     console.error("Erro ao validar token:", error.message);
@@ -54,7 +61,9 @@ app.post("/recipes", authenticateJWT, async (req, res) => {
     const docRef = await db.collection("recipes").add(recipe);
     res.status(201).send({ id: docRef.id, ...recipe });
   } catch (error) {
-    res.status(400).send({ error: error.message });
+    res
+      .status(400)
+      .send({ error: "rota de addRecipes", details: error.message });
   }
 });
 
