@@ -45,7 +45,12 @@ button:hover {
   border: 1px solid #ddd;
   border-radius: 4px;
 }
-.recipe-item button {
+.recipe-item .deleteBtn {
   background-color: red;
+  border-radius: 4px;
+}
+
+.recipe-item .updateBtn {
+  background-color: #4caf50;
   border-radius: 4px;
 }

@@ -23,15 +23,12 @@ async function authenticateJWT(req, res, next) {
 
   const token = authHeader?.split(" ")[1];
   if (!token) {
-    console.log("on if");
-
     return res.status(403).send({ error: "Token não fornecido" });
   }
   try {
     //Verifica o token com o Firebase Admin
     const decodedToken = await admin.auth().verifyIdToken(token);
     req.user = decodedToken;
-    console.log("token validado");
 
     next();
   } catch (error) {

@@ -1,7 +1,6 @@
 import { auth, signInWithEmailAndPassword } from "./firebase-config.js";
 
 let authToken = ""; // Variável para armazenar o token do usuário
-let recipeId = "";
 
 // Função de login
 async function login(email, password) {
@@ -11,15 +10,15 @@ async function login(email, password) {
       email,
       password
     );
-    const token = await userCredential.user.getIdToken(); // Gera o token JWT
+    const token = await userCredential.user.getIdToken(); //Gera o token JWT
     console.log("Login bem-sucedido! Token:", token);
 
-    // Armazena o token para usar nas próximas requisições
+    //Armazena o token para usar nas próximas requisições
     localStorage.setItem("token", token);
     authToken = token;
     alert("Login bem-sucedido!");
-
-    // Redirecione ou atualize a interface se necessário
+    loadRecipes();
+    //Redirecione ou atualize a interface se necessário
   } catch (error) {
     console.error("Erro ao realizar login:", error.message);
     alert("Erro ao realizar login: " + error.message);
@@ -35,12 +34,8 @@ document.getElementById("loginBtn").addEventListener("click", () => {
 
 // Função para adicionar uma receita
 async function addRecipe() {
-  console.log("on addRecipe");
-
   const name = document.getElementById("recipe-name").value;
   const description = document.getElementById("recipe-description").value;
-  console.log(authToken);
-
   const response = await fetch("http://localhost:3000/recipes", {
     method: "POST",
     headers: {
@@ -61,7 +56,7 @@ async function addRecipe() {
   }
 }
 
-document.getElementById("addRecipe").addEventListener("click", () => {
+document.getElementById("createBtn").addEventListener("click", () => {
   addRecipe();
 });
 
@@ -73,12 +68,10 @@ async function loadRecipes() {
       Authorization: `Bearer ${authToken}`,
     },
   });
-  console.log("before if");
 
   if (response.ok) {
     const recipes = await response.json();
     displayRecipes(recipes);
-    console.log("teste");
   } else {
     alert("Erro ao carregar receitas");
   }
@@ -96,10 +89,20 @@ function displayRecipes(recipes) {
     recipeItem.innerHTML = `
       <h3>${recipe.name}</h3>
       <p>${recipe.description}</p>
-      <button id="deleteBtn">Deletar</button>
+      <button class="deleteBtn" data-id=${recipe.id}>Deletar</button>
+      <button class="updateBtn" data-id=${recipe.id}>Editar</button>
     `;
-    recipeId = recipe.id;
+
     recipeList.appendChild(recipeItem);
+  });
+
+  //Evento de clique para cada botão
+  const deleteButtons = document.querySelectorAll(".deleteBtn");
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const recipeId = event.target.getAttribute("data-id"); // Obtém o ID da receita
+      deleteRecipe(recipeId); // Chama a função com o ID correto
+    });
   });
 }
 
@@ -114,12 +117,8 @@ async function deleteRecipe(recipeId) {
 
   if (response.ok) {
     alert("Receita deletada com sucesso!");
-    loadRecipes(); // Recarrega a lista de receitas
+    loadRecipes(); //Recarrega a lista de receitas
   } else {
     alert("Erro ao deletar receita");
   }
 }
-
-document.getElementById("deleteBtn").addEventListener("click", () => {
-  deleteRecipe(recipeId);
-});
