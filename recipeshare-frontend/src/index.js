@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let authToken = localStorage.getItem("token") || ""; // Pega o token armazenado
 
   // Função de login
-  async function login(email, password) {
+  async function login(username, email, password) {
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
       localStorage.setItem("token", token);
       authToken = token;
       alert("Login bem-sucedido!");
-      window.location.href = "pages/recipe_page.html"; // Redireciona para a página de receitas
+      window.location.href = "pages/home_page.html"; // Redireciona para a página de receitas
     } catch (error) {
       console.error("Erro ao realizar login:", error.message);
       alert("Erro ao realizar login: " + error.message);
@@ -30,11 +30,45 @@ document.addEventListener("DOMContentLoaded", function () {
     // Vincular a função a um botão de login
     const loginBtn = document.getElementById("loginBtn");
     loginBtn.addEventListener("click", () => {
+      const username = document.getElementById("username").value;
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       login(email, password);
     });
   }
+
+  // Função para carregar todas as receitas (de todos os usuários)
+  async function loadAllRecipes() {
+    if (!authToken) {
+      alert("Você precisa estar logado para acessar esta página.");
+      window.location.href = "login.html"; // Redireciona para a página de login
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3000/recipes/all", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const recipes = await response.json();
+        displayRecipes(recipes); // Reutilize a função displayRecipes
+      } else {
+        alert("Erro ao carregar receitas de todos os usuários");
+      }
+    } catch (error) {
+      console.error("Erro ao carregar receitas:", error);
+      alert("Erro ao carregar receitas de todos os usuários");
+    }
+  }
+
+  // Chama loadAllRecipes automaticamente ao carregar a página
+  document.addEventListener("DOMContentLoaded", () => {
+    loadAllRecipes();
+  });
 
   // Verifica se estamos na página de receitas
   if (document.getElementById("createBtn")) {
