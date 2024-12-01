@@ -1,23 +1,109 @@
-body {
-  font-family: Arial, sans-serif;
-  background-color: #f4f4f4;
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+* {
   margin: 0;
   padding: 0;
 }
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f1f1f1;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar {
+  background-color: #06616e;
+  padding: 10px;
+}
+
 .container {
   max-width: 900px;
   margin: auto;
   padding: 20px;
-  background-color: #fff;
+  background-color: #e7eaef;
 }
+
 h1 {
   text-align: center;
-  color: #333;
+  color: #e7eaef;
 }
+
+.menu {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  margin-top: 30px;
+  color: #e7eaef;
+  gap: 15px;
+}
+
+.search {
+  display: flex;
+  align-items: flex-end;
+}
+
+.input-search {
+  width: 150px;
+  height: 20px;
+  border-radius: 16px;
+  padding: 0 10px 0 10px;
+}
+
+.searchBtn {
+  height: 20px;
+  cursor: pointer;
+}
+
+.recipe-ul {
+  display: flex;
+  gap: 10px;
+}
+
+.menu-item {
+  position: relative;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.menu-item::before {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 2px;
+  bottom: 0;
+  left: 0;
+  background-color: #e7eaef;
+  visibility: hidden;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: all 0.3s ease-in-out 0s;
+}
+
+.menu-item:hover:before {
+  visibility: visible;
+  transform: scaleX(1);
+}
+
+.backBtn {
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+}
+
+.backBtn:hover {
+  background-color: #d4d6da;
+}
+
+.your-recipe {
+  margin-top: 30px;
+}
+
 form,
 .recipe-list {
   margin-bottom: 20px;
 }
+
 input[type="text"],
 input[type="email"],
 input[type="password"],
@@ -28,30 +114,39 @@ textarea {
   border: 1px solid #ddd;
   border-radius: 4px;
 }
+
 button {
   padding: 10px 15px;
-  background-color: #4caf50;
-  color: white;
+  position: relative;
+  background-color: #0d9eb2;
+  color: #e7eaef;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
+
 button:hover {
-  background-color: #45a049;
+  background-color: #06616e;
 }
+
 .recipe-item {
   padding: 10px;
   margin: 10px 0;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
+
 .recipe-item .deleteBtn {
-  background-color: red;
+  background-color: #c91f1f;
   border-radius: 4px;
 }
 
+.recipe-item .deleteBtn:hover {
+  background-color: #881414;
+}
+
 .recipe-item .updateBtn {
-  background-color: #4caf50;
+  background-color: #06616e;
   border-radius: 4px;
 }
 
