@@ -1,7 +1,11 @@
 // Importar as funções necessárias do SDKs do Firebase
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+} from "firebase/auth";
 
 // Configuração do Firebase para o seu aplicativo web
 const firebaseConfig = {
@@ -19,4 +23,10 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 
-export { app, analytics, auth, signInWithEmailAndPassword };
+export {
+  app,
+  analytics,
+  auth,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+};

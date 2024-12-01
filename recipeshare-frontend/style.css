@@ -54,3 +54,19 @@ button:hover {
   background-color: #4caf50;
   border-radius: 4px;
 }
+
+.signup-link,
+.login-link {
+  color: #212121;
+}
+
+.signup-link:visited,
+.login-link:visited {
+  color: #5844a7;
+}
+
+.signup-navigation-text,
+.login-navigation-text {
+  margin-top: 20px;
+  font-size: 14px;
+}

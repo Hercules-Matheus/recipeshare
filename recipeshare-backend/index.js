@@ -1,5 +1,4 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const { admin, db } = require("./firebase-config");
@@ -37,14 +36,54 @@ async function authenticateJWT(req, res, next) {
   }
 }
 
-//Rota para consultas em conjunto
+// Rota para consultas em conjunto
 app.get("/recipes", authenticateJWT, async (req, res) => {
   try {
     const snapshot = await db
       .collection("recipes")
       .where("userId", "==", req.user.uid)
       .get();
-    const recipes = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+    // Criação de um array de receitas com username do criador
+    const recipes = await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const recipeData = doc.data();
+        const userRef = db.collection("users").doc(recipeData.userId);
+        const userDoc = await userRef.get();
+
+        const username = userDoc.exists
+          ? userDoc.data().username
+          : "Desconhecido";
+
+        return { id: doc.id, ...recipeData, username }; // Adiciona o username
+      })
+    );
+
+    res.send(recipes);
+  } catch (error) {
+    res.status(400).send({ error: error.message });
+  }
+});
+
+// Rota para consultar todas as receitas de todos os usuários
+app.get("/recipes/all", authenticateJWT, async (req, res) => {
+  try {
+    const snapshot = await db.collection("recipes").get(); // Não filtra por userId
+
+    const recipes = await Promise.all(
+      snapshot.docs.map(async (doc) => {
+        const recipeData = doc.data();
+        const userRef = db.collection("users").doc(recipeData.userId);
+        const userDoc = await userRef.get();
+
+        const username = userDoc.exists
+          ? userDoc.data().username
+          : "Desconhecido";
+
+        return { id: doc.id, ...recipeData, username };
+      })
+    );
+
     res.send(recipes);
   } catch (error) {
     res.status(400).send({ error: error.message });
@@ -107,6 +146,41 @@ app.delete("/recipes/:id", authenticateJWT, async (req, res) => {
     res
       .status(400)
       .send({ error: "Erro ao deletar receita", details: error.message });
+  }
+});
+
+// Rota para cadastro de nome de usuário
+app.post("/register", authenticateJWT, async (req, res) => {
+  const { username, email } = req.body;
+
+  if (!email || !username) {
+    return res.status(400).send({ error: "Email e username são obrigatórios" });
+  }
+
+  try {
+    // Verifica se o usuário já está registrado no Firestore
+    const userRef = db.collection("users").doc(req.user.uid);
+    const userDoc = await userRef.get();
+
+    if (userDoc.exists) {
+      return res.status(400).send({ error: "Usuário já cadastrado" });
+    }
+
+    // Salvar dados adicionais do usuário no Firestore
+    await userRef.set({
+      username,
+      email,
+    });
+
+    res.status(201).send({
+      message: "Usuário registrado com sucesso no Firestore",
+      userId: req.user.uid,
+    });
+  } catch (error) {
+    console.error("Erro ao cadastrar usuário:", error.message);
+    res
+      .status(400)
+      .send({ error: "Erro ao cadastrar usuário", details: error.message });
   }
 });
 
