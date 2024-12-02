@@ -11,12 +11,18 @@ body {
   background-color: #f1f1f1;
   margin: 0;
   padding: 0;
+  height: 100vh;
 }
 
 .navbar {
   background: linear-gradient(-45deg, #06616e, #017080, #0d9eb2);
   padding: 10px;
   margin-bottom: 50px;
+}
+
+.subtitle {
+  display: flex;
+  justify-content: center;
 }
 
 .container-login {
@@ -71,12 +77,11 @@ h1 {
 
 .recipe-ul {
   display: flex;
-  gap: 10px;
+  gap: 20px;
 }
 
 .menu-item {
   position: relative;
-  gap: 10px;
   cursor: pointer;
 }
 
@@ -117,22 +122,19 @@ form {
   margin-bottom: 20px;
 }
 
-.recipe-list {
-  margin: 20px 0px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding-bottom: 50px;
-  gap: 10px;
-}
-
 input[type="text"],
 input[type="email"],
-input[type="password"],
+input[type="password"] {
+  width: 98%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 textarea {
-  width: 100%;
+  width: 98%;
+  min-height: 300px;
   padding: 8px;
   margin: 10px 0;
   border: 1px solid #ddd;
@@ -153,6 +155,48 @@ button:hover {
   background-color: #06616e;
 }
 
+.recipe-container > .recipe-list > .recipe-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  height: 70%;
+  width: 70%;
+  color: #111111;
+  cursor: default;
+  transition: transform 0.3s ease-in;
+}
+
+.recipe-container > .recipe-list > .recipe-item .description {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100px;
+  text-align: left;
+  padding: 0px 10px;
+  margin: 10px 0px;
+  white-space: pre-line;
+  line-height: 25px;
+  overflow: visible;
+  text-overflow: ellipsis;
+}
+
+.recipe-container > .recipe-list > .recipe-item:hover {
+  transform: scale(1);
+}
+
+.recipe-list {
+  margin: 20px 0px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding-bottom: 50px;
+  gap: 10px;
+}
+
 .recipe-item {
   display: flex;
   flex-direction: column;
@@ -163,6 +207,12 @@ button:hover {
   width: 250px;
   color: #111111;
   cursor: pointer;
+  transition: transform 0.3s ease-in;
+}
+
+.recipe-item:hover {
+  transition: transform 0.3s ease-in;
+  transform: scale(1.05);
 }
 
 .name {

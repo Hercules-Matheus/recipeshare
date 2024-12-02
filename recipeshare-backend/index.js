@@ -8,7 +8,7 @@ dotenv.config();
 const app = express();
 const PORT = 3000;
 
-//Ativar CORS
+// Ativar CORS
 app.use(cors());
 
 //Middleware
@@ -36,7 +36,19 @@ async function authenticateJWT(req, res, next) {
   }
 }
 
-// Rota para consultas em conjunto
+// Middleware de Content Security Policy (CSP)
+app.use((req, res, next) => {
+  res.setHeader(
+    "Content-Security-Policy",
+    "default-src 'self'; " +
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+      "style-src 'self' 'unsafe-inline'; " +
+      "font-src 'self';"
+  );
+  next();
+});
+
+// Rota para consultas de receitas do usuario atual em conjunto
 app.get("/recipes", authenticateJWT, async (req, res) => {
   try {
     const snapshot = await db
@@ -65,7 +77,7 @@ app.get("/recipes", authenticateJWT, async (req, res) => {
   }
 });
 
-// Rota para consultar todas as receitas de todos os usuários
+// Rota para consultar em conjunto todas as receitas de todos os usuários
 app.get("/recipes/all", authenticateJWT, async (req, res) => {
   try {
     const snapshot = await db.collection("recipes").get(); // Não filtra por userId
@@ -90,13 +102,35 @@ app.get("/recipes/all", authenticateJWT, async (req, res) => {
   }
 });
 
+// Rota para consultar receita por ID
+app.get("/recipes/:id", authenticateJWT, async (req, res) => {
+  const { id } = req.params;
+  try {
+    const recipeDoc = await db.collection("recipes").doc(id).get();
+
+    if (!recipeDoc.exists) {
+      return res.status(404).send({ error: "Receita não encontrada." });
+    }
+
+    const recipeData = recipeDoc.data();
+    const userRef = db.collection("users").doc(recipeData.userId);
+    const userDoc = await userRef.get();
+
+    const username = userDoc.exists ? userDoc.data().username : "Desconhecido"; // Caso não encontre o usuário
+
+    // Responde com a receita e o username
+    res.status(200).send({ id: recipeDoc.id, ...recipeData, username });
+  } catch (error) {
+    res.status(500).send({ error: error.message });
+  }
+});
+
 //Rota para adicionar receita
 app.post("/recipes", authenticateJWT, async (req, res) => {
   try {
     const recipe = {
       ...req.body,
       userId: req.user.uid,
-      name_lower: req.body.name.toLowerCase(),
     };
     const docRef = await db.collection("recipes").add(recipe);
     res.status(201).send({ id: docRef.id, ...recipe });
@@ -138,70 +172,6 @@ app.delete("/recipes/:id", authenticateJWT, async (req, res) => {
     res
       .status(400)
       .send({ error: "Erro ao deletar receita", details: error.message });
-  }
-});
-
-// Rota para buscar receitas por nome
-app.get("/recipes/search", authenticateJWT, async (req, res) => {
-  const { name } = req.query;
-
-  if (!name) {
-    return res.status(400).send({ error: "Nome da receita é obrigatório" });
-  }
-
-  try {
-    const snapshot = await db
-      .collection("recipes")
-      .orderBy("name_lower")
-      .startAt(name.toLowerCase())
-      .endAt(name.toLowerCase() + "\uf8ff")
-      .get();
-
-    if (snapshot.empty) {
-      return res.status(404).send({ error: "Nenhuma receita encontrada" });
-    }
-
-    const recipes = [];
-
-    // Itera pelas receitas
-    for (const doc of snapshot.docs) {
-      const recipe = doc.data();
-      const userId = recipe.userId; // O campo userId da receita
-
-      if (!userId) {
-        console.error(`userId não encontrado para a receita ${doc.id}`);
-        recipes.push({
-          id: doc.id,
-          ...recipe,
-          username: "Desconhecido",
-        });
-        continue;
-      }
-
-      // Recupera o documento do usuário relacionado
-      const userDoc = await db.collection("users").doc(userId).get();
-
-      if (!userDoc.exists) {
-        console.error(`Usuário não encontrado para o userId: ${userId}`);
-        recipes.push({
-          id: doc.id,
-          ...recipe,
-          username: "Desconhecido",
-        });
-      } else {
-        const username = userDoc.data().username || "Desconhecido";
-        recipes.push({
-          id: doc.id,
-          ...recipe,
-          username,
-        });
-      }
-    }
-
-    res.send(recipes);
-  } catch (error) {
-    console.error("Erro ao buscar receitas:", error);
-    res.status(500).send({ error: error.message });
   }
 });
 

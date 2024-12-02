@@ -1,30 +1,26 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>RecipeShare</title>
-    <link rel="stylesheet" href="../style.css">
+    <title>Receitas</title>
+    <link rel="stylesheet" href="../style.css" />
     <script src="../dist/bundle.js" defer></script>
   </head>
   <body>
-    <div class="container">
-      <div id="backBtn">
-        <i class="backBtn material-icons">arrow_back</i>
+    <div class="navbar">
+      <h1 id="recipe-page">RecipeShare</h1>
+      <div class="menu">
+        <ul class="recipe-ul">
+          <div id="all-recipes" class="menu-item">Todas as Receitas</div>
+          <div id="recipe-navigate" class="menu-item">Minhas Receitas</div>
+          <div id="logout" class="menu-item">Sair</div>
+        </ul>
       </div>
-      <h1>RecipeShare</h1>
-      <!-- Recipe Form -->
-      <div id="recipe-section">
-        <h2>Adicionar Receita</h2>
-        <input type="text" id="recipe-name" placeholder="Nome da Receita" />
-        <textarea
-          id="recipe-description"
-          placeholder="Descrição da Receita"
-        ></textarea>
-        <button id="createBtn">Adicionar Receita</button>
-
-        <h2 class="your-recipe">Suas Receitas</h2>
-        <div id="recipe-list" class="recipe-list"></div>
+    </div>
+    <h2 class="subtitle">Receita</h2>
+    <div class="recipe-container">
+      <div id="recipe-list" class="recipe-list"></div>
     </div>
   </body>
 </html>
