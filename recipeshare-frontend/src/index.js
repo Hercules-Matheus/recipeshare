@@ -128,8 +128,8 @@ document.addEventListener("DOMContentLoaded", function () {
       recipeItem.classList.add("recipe-item");
 
       recipeItem.innerHTML = `
-        <h3>${recipe.name}</h3>
-        <p>${recipe.description}</p>
+        <h3 class="name">${recipe.name}</h3>
+        <p class="description">${recipe.description}</p>
         <p><strong>Criado por:</strong> ${recipe.username}</p>
       `;
 
@@ -146,11 +146,13 @@ document.addEventListener("DOMContentLoaded", function () {
       recipeItem.classList.add("recipe-item");
 
       recipeItem.innerHTML = `
-        <h3>${recipe.name}</h3>
-        <p>${recipe.description}</p>
+        <h3 class="name">${recipe.name}</h3>
+        <p class="description">${recipe.description}</p>
         <p><strong>Criado por:</strong> ${recipe.username}</p>
+        <div id="actionBtns" class="actionBtns">
         <button class="deleteBtn" data-id=${recipe.id}>Deletar</button>
         <button class="editBtn" data-id=${recipe.id}>Editar</button>
+        </div>
       `;
 
       recipeList.appendChild(recipeItem);
