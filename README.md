@@ -22,3 +22,7 @@ https://recipeshareweb.vercel.app
 ## Demo video
 
 https://youtu.be/yJhZaQ4cue0
+
+## Artigo
+
+https://drive.google.com/file/d/1aUsWiQJ_PQzFPKF9Xrw0Ho74WOlubmc3/view?usp=sharing

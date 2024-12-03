@@ -15,10 +15,10 @@ link.href =
 // Adicionar o <link> no <head> do documento
 document.head.appendChild(link);
 
-document.addEventListener("DOMContentLoaded", function () {
-  // Aplicar a fonte Poppins globalmente
-  document.documentElement.style.fontFamily = "Poppins, sans-serif";
+// Aplicar a fonte Poppins globalmente
+document.body.style.fontFamily = "Poppins, sans-serif";
 
+document.addEventListener("DOMContentLoaded", function () {
   let authToken = localStorage.getItem("token");
 
   // Listener de autenticação do Firebase
