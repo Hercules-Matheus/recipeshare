@@ -20,6 +20,7 @@ module.exports = {
         loader: "html-loader",
         options: {
           sources: false, // Evitar problemas com imagens
+          minimize: false,
         },
       },
     ],
@@ -31,27 +32,32 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: "./index.html", // Ponto de entrada do HTML
       filename: "index.html",
+      minify: false, // Desabilitar minificação
     }),
-    // Geração de outras páginas HTML
     new HtmlWebpackPlugin({
       template: "./pages/edit_recipe_page.html",
       filename: "edit_recipe_page.html",
+      minify: false, // Desabilitar minificação
     }),
     new HtmlWebpackPlugin({
       template: "./pages/home_page.html",
       filename: "home_page.html",
+      minify: false, // Desabilitar minificação
     }),
     new HtmlWebpackPlugin({
       template: "./pages/my_recipe_page.html",
       filename: "my_recipe_page.html",
+      minify: false, // Desabilitar minificação
     }),
     new HtmlWebpackPlugin({
       template: "./pages/recipe_page.html",
       filename: "recipe_page.html",
+      minify: false, // Desabilitar minificação
     }),
     new HtmlWebpackPlugin({
       template: "./pages/signup_page.html",
       filename: "signup_page.html",
+      minify: false, // Desabilitar minificação
     }),
   ],
   devServer: {

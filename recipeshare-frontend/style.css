@@ -122,6 +122,14 @@ form {
   margin-bottom: 20px;
 }
 
+#signup-section > input.usersame {
+  width: 98%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
 input[type="text"],
 input[type="email"],
 input[type="password"] {
