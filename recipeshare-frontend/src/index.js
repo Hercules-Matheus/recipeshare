@@ -12,9 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   // Listener de autenticação do Firebase
   auth.onAuthStateChanged(async (user) => {
     if (user) {
-      console.log("Usuário autenticado:", user.email);
       authToken = await validateAndRefreshToken();
-      console.log("token", authToken);
     } else {
       console.warn("Nenhum usuário autenticado. auth listener");
       authToken = "";
@@ -33,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const currentTime = Date.now();
 
         if (currentTime > expirationTime) {
-          console.log("Token expirado. Renovando...");
+          // Renova o token
           authToken = await user.getIdToken(true);
           localStorage.setItem("token", authToken);
         } else {
@@ -61,7 +59,6 @@ document.addEventListener("DOMContentLoaded", function () {
       );
       const token = await userCredential.user.getIdToken();
       localStorage.setItem("token", token);
-      console.log("Login bem-sucedido!");
       window.location.href = "./home_page.html"; // Navegação para a página inicial
     } catch (error) {
       console.error("Erro ao realizar login:", error.message);
