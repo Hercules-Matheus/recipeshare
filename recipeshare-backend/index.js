@@ -1,5 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const morgan = require("morgan");
 const cors = require("cors");
 const { admin, db } = require("./firebase-config");
 const dotenv = require("dotenv");
@@ -9,7 +10,31 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Ativar CORS
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "https://recipeshareweb.vercel.app",
+      "http://localhost:5500",
+      "http://127.0.0.1:5500",
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+  })
+);
+
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin || "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
+
+// Rota OPTIONS para CORS
+app.options("*", cors());
+
+app.use(morgan("dev"));
 
 //Middleware
 app.use(bodyParser.json());
@@ -31,22 +56,11 @@ async function authenticateJWT(req, res, next) {
 
     next();
   } catch (error) {
+    console.log(`/authenticate ${error}`);
     console.error("Erro ao validar token:", error.message);
     res.status(401).send({ error: "Token inválido ou expirado" });
   }
 }
-
-// Middleware de Content Security Policy (CSP)
-app.use((req, res, next) => {
-  res.setHeader(
-    "Content-Security-Policy",
-    "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-      "style-src 'self' 'unsafe-inline'; " +
-      "font-src 'self';"
-  );
-  next();
-});
 
 // Rota para consultas de receitas do usuario atual em conjunto
 app.get("/recipes", authenticateJWT, async (req, res) => {
@@ -73,6 +87,7 @@ app.get("/recipes", authenticateJWT, async (req, res) => {
 
     res.send(recipes);
   } catch (error) {
+    console.log(`/consulta user atual ${error}`);
     res.status(400).send({ error: error.message });
   }
 });
@@ -98,6 +113,7 @@ app.get("/recipes/all", authenticateJWT, async (req, res) => {
 
     res.send(recipes);
   } catch (error) {
+    console.log(`/consulta geral ${error}`);
     res.status(400).send({ error: error.message });
   }
 });
@@ -121,6 +137,7 @@ app.get("/recipes/:id", authenticateJWT, async (req, res) => {
     // Responde com a receita e o username
     res.status(200).send({ id: recipeDoc.id, ...recipeData, username });
   } catch (error) {
+    console.log(`/consulta ID ${error}`);
     res.status(500).send({ error: error.message });
   }
 });
@@ -135,6 +152,7 @@ app.post("/recipes", authenticateJWT, async (req, res) => {
     const docRef = await db.collection("recipes").add(recipe);
     res.status(201).send({ id: docRef.id, ...recipe });
   } catch (error) {
+    console.log(`/add ${error}`);
     res
       .status(400)
       .send({ error: "rota de addRecipes", details: error.message });
@@ -148,6 +166,7 @@ app.put("/recipes/:id", authenticateJWT, async (req, res) => {
     await db.collection("recipes").doc(id).update(req.body);
     res.status(200).send({ id, ...req.body });
   } catch (error) {
+    console.log(`/update ${error}`);
     res.status(400).send({ error: error.message });
   }
 });
@@ -168,6 +187,7 @@ app.delete("/recipes/:id", authenticateJWT, async (req, res) => {
     await db.collection("recipes").doc(id).delete();
     res.status(200).send({ message: "Receita deletada com sucesso" });
   } catch (error) {
+    console.log(`/delete ${error}`);
     console.error("Erro ao deletar receita:", error.message);
     res
       .status(400)
@@ -203,6 +223,7 @@ app.post("/register", authenticateJWT, async (req, res) => {
       userId: req.user.uid,
     });
   } catch (error) {
+    console.log(`/register ${error}`);
     console.error("Erro ao cadastrar usuário:", error.message);
     res
       .status(400)

@@ -4,6 +4,8 @@ import {
   createUserWithEmailAndPassword,
 } from "./firebase-config.js";
 
+import "../style.css";
+
 document.addEventListener("DOMContentLoaded", function () {
   let authToken = localStorage.getItem("token");
 
@@ -60,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const token = await userCredential.user.getIdToken();
       localStorage.setItem("token", token);
       console.log("Login bem-sucedido!");
-      window.location.href = "pages/home_page.html"; // Navegação para a página inicial
+      window.location.href = "./home_page.html"; // Navegação para a página inicial
     } catch (error) {
       console.error("Erro ao realizar login:", error.message);
       alert("Erro ao realizar login: " + error.message);
@@ -77,18 +79,21 @@ document.addEventListener("DOMContentLoaded", function () {
       const token = await userCredential.user.getIdToken();
       authToken = token;
       localStorage.setItem("token", token);
-      const response = await fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({ username, email }),
-      });
+      const response = await fetch(
+        "https://recipeshare-backend.onrender.com/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ username, email }),
+        }
+      );
 
       if (response.ok) {
         alert("Usuário cadastrado com sucesso!");
-        window.location.href = "pages/home_page.html"; // Navegação para a página inicial após cadastro
+        window.location.href = "./home_page.html"; // Navegação para a página inicial após cadastro
       } else {
         alert("Erro ao cadastrar usuário na API!");
       }
@@ -101,17 +106,20 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadAllRecipes() {
     if (!authToken) {
       alert("Você precisa estar logado para acessar esta página.");
-      window.location.href = "../index.html"; // Redirecionar para login se não autenticado
+      window.location.href = "./index.html"; // Redirecionar para login se não autenticado
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:3000/recipes/all", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const response = await fetch(
+        "https://recipeshare-backend.onrender.com/recipes/all",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const recipes = await response.json();
@@ -150,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
       button.addEventListener("click", (event) => {
         const recipeId = event.target.getAttribute("data-id");
         localStorage.setItem("editRecipeId", recipeId); // Armazena o ID no localStorage
-        window.location.href = "edit_recipe_page.html"; // Redireciona para a página de edição
+        window.location.href = "./edit_recipe_page.html"; // Redireciona para a página de edição
       });
     });
 
@@ -168,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/recipes/${recipeId}`,
+        `https://recipeshare-backend.onrender.com/recipes/${recipeId}`,
         {
           method: "PUT",
           headers: {
@@ -181,7 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (response.ok) {
         alert("Receita atualizada com sucesso!");
-        window.location.href = "my_recipe_page.html";
+        window.location.href = "./my_recipe_page.html";
       } else {
         alert("Erro ao atualizar receita.");
       }
@@ -193,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function deleteRecipe(recipeId) {
     try {
       const response = await fetch(
-        `http://localhost:3000/recipes/${recipeId}`,
+        `https://recipeshare-backend.onrender.com/recipes/${recipeId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${authToken}` },
@@ -233,7 +241,7 @@ document.addEventListener("DOMContentLoaded", function () {
       card.addEventListener("click", (event) => {
         const recipeId = event.currentTarget.getAttribute("data-id");
         localStorage.setItem("recipeId", recipeId); // Armazena o ID no localStorage
-        window.location.href = "recipe_page.html"; // Redireciona para a página de edição
+        window.location.href = "./recipe_page.html"; // Redireciona para a página de edição
       });
     });
   }
@@ -243,14 +251,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const description = document.getElementById("recipe-description").value;
 
     try {
-      const response = await fetch("http://localhost:3000/recipes", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-        body: JSON.stringify({ name, description }),
-      });
+      const response = await fetch(
+        "https://recipeshare-backend.onrender.com/recipes",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify({ name, description }),
+        }
+      );
 
       if (response.ok) {
         alert("Receita adicionada com sucesso!");
@@ -265,10 +276,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function loadRecipes() {
     try {
-      const response = await fetch("http://localhost:3000/recipes", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
-      });
+      const response = await fetch(
+        "https://recipeshare-backend.onrender.com/recipes",
+        {
+          method: "GET",
+          headers: { Authorization: `Bearer ${authToken}` },
+        }
+      );
 
       if (response.ok) {
         const recipes = await response.json();
@@ -284,7 +298,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadRecipeById(recipeId) {
     try {
       const response = await fetch(
-        `http://localhost:3000/recipes/${recipeId}`,
+        `https://recipeshare-backend.onrender.com/recipes/${recipeId}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${authToken}` },
@@ -322,7 +336,7 @@ document.addEventListener("DOMContentLoaded", function () {
   async function loadRecipeDetails(recipeId) {
     try {
       const response = await fetch(
-        `http://localhost:3000/recipes/${recipeId}`,
+        `https://recipeshare-backend.onrender.com/recipes/${recipeId}`,
         {
           method: "GET",
           headers: { Authorization: `Bearer ${authToken}` },
@@ -346,7 +360,7 @@ document.addEventListener("DOMContentLoaded", function () {
     try {
       await auth.signOut();
       localStorage.removeItem("token");
-      window.location.href = "../index.html"; // Navegação para página de login após logout
+      window.location.href = "./index.html"; // Navegação para página de login após logout
       alert("Logout realizado com sucesso!");
     } catch (error) {
       console.error("Erro ao realizar logout:", error);
@@ -374,39 +388,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (document.getElementById("home-page")) {
       document.getElementById("all-recipes").addEventListener("click", () => {
-        window.location.href = "home_page.html";
+        window.location.href = "./home_page.html";
       });
       document.getElementById("logout").addEventListener("click", logout);
       document
         .getElementById("recipe-navigate")
         .addEventListener("click", () => {
-          window.location.href = "my_recipe_page.html";
+          window.location.href = "./my_recipe_page.html";
         });
       loadAllRecipes();
     }
     if (document.getElementById("createBtn")) {
       document.getElementById("backBtn").addEventListener("click", () => {
-        window.location.href = "home_page.html";
+        window.location.href = "./home_page.html";
       });
       document.getElementById("createBtn").addEventListener("click", addRecipe);
       loadRecipes();
     }
     if (document.getElementById("recipe-page")) {
       document.getElementById("all-recipes").addEventListener("click", () => {
-        window.location.href = "home_page.html";
+        window.location.href = "./home_page.html";
       });
       document.getElementById("logout").addEventListener("click", logout);
       document
         .getElementById("recipe-navigate")
         .addEventListener("click", () => {
-          window.location.href = "my_recipe_page.html";
+          window.location.href = "./my_recipe_page.html";
         });
       const recipeId = localStorage.getItem("recipeId");
       loadRecipeById(recipeId);
     }
     if (document.getElementById("saveBtn")) {
       document.getElementById("backBtn").addEventListener("click", () => {
-        window.location.href = "home_page.html";
+        window.location.href = "./home_page.html";
       });
       const recipeId = localStorage.getItem("editRecipeId");
       if (recipeId) {
@@ -416,7 +430,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       } else {
         alert("ID da receita não encontrado.");
-        window.location.href = "my_recipe_page.html";
+        window.location.href = "./my_recipe_page.html";
       }
     }
   }
