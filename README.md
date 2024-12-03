@@ -2,6 +2,11 @@
 
 Aplicação desenvolvida para trabalho de faculdade.
 
+## Integrantes
+
+Hercules Matheus Lima Silva - 12823214720
+Caique da Silva Miranda Santos - 12723216257
+
 ## O que é
 
 RecipeShare é uma website para compartilhamento de receitas gastrônomicas
@@ -13,3 +18,7 @@ Acesse link abaixo, ao carregar a pagina, clique no link para criar uma conta, a
 ## Link
 
 https://recipeshareweb.vercel.app
+
+## Demo video
+
+https://youtu.be/yJhZaQ4cue0
