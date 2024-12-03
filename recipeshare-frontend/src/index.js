@@ -6,7 +6,19 @@ import {
 
 import "../style.css";
 
+// Criar o elemento <link> para importar a fonte Poppins
+const link = document.createElement("link");
+link.rel = "stylesheet";
+link.href =
+  "https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap";
+
+// Adicionar o <link> no <head> do documento
+document.head.appendChild(link);
+
 document.addEventListener("DOMContentLoaded", function () {
+  // Aplicar a fonte Poppins globalmente
+  document.documentElement.style.fontFamily = "Poppins, sans-serif";
+
   let authToken = localStorage.getItem("token");
 
   // Listener de autenticação do Firebase
