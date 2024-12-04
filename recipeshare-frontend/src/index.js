@@ -429,7 +429,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     if (document.getElementById("saveBtn")) {
       document.getElementById("backBtn").addEventListener("click", () => {
-        window.location.href = "./home_page.html";
+        window.location.href = "./my_recipe_page.html";
       });
       const recipeId = localStorage.getItem("editRecipeId");
       if (recipeId) {
