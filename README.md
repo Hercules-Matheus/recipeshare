@@ -4,7 +4,7 @@ Aplicação desenvolvida para trabalho de faculdade.
 
 ## Integrantes
 
-Hercules Matheus Lima Silva - 12823214720
+Hercules Matheus Lima Silva - 12823214720<br>
 Caique da Silva Miranda Santos - 12723216257
 
 ## O que é
